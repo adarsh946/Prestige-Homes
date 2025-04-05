@@ -1,7 +1,7 @@
 import { Request } from "express";
 import jwt from "jsonwebtoken";
 
-const shouldBeLogin = (req: Request, res: any) => {
+export const shouldBeLogin = (req: any, res: any) => {
   // Just check the user is logged in or not
 
   console.log(req.userId);

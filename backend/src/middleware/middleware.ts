@@ -1,7 +1,7 @@
 import { NextFunction, Request } from "express";
 import jwt from "jsonwebtoken";
 
-export const verifyToken = (req: Request, res: any, next: NextFunction) => {
+export const verifyToken = (req: any, res: any, next: NextFunction) => {
   const token = req.cookies.token;
   try {
     if (!token) {
@@ -16,7 +16,7 @@ export const verifyToken = (req: Request, res: any, next: NextFunction) => {
         message: "Unable to decode the token",
       });
     }
-    req. = decodedToken.;
+    req.userId = decodedToken.id;
     next();
   } catch (error) {
     console.error(error);

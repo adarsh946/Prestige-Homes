@@ -13,8 +13,10 @@ export const registration = async (req: Request, res: any) => {
   }
 
   try {
-    const ifExists = await prisma.user.findOne({
-      email: parsedData.data?.email,
+    const ifExists = await prisma.user.findUnique({
+      where: {
+        email: parsedData.data?.email,
+      },
     });
 
     if (ifExists) {
@@ -29,9 +31,11 @@ export const registration = async (req: Request, res: any) => {
     );
 
     const user = await prisma.user.create({
-      fullname: parsedData.data?.fullname,
-      email: parsedData.data?.email,
-      password: hashedPassword,
+      data: {
+        fullname: parsedData.data?.fullname,
+        email: parsedData.data?.email,
+        password: hashedPassword,
+      },
     });
 
     if (!user) {
@@ -59,8 +63,10 @@ export const login = async (req: Request, res: any) => {
   }
 
   try {
-    const user = await prisma.user.findOne({
-      email: parsedData.data?.email,
+    const user = await prisma.user.findUnique({
+      where: {
+        email: parsedData.data?.email,
+      },
     });
 
     if (!user) {
@@ -85,6 +91,7 @@ export const login = async (req: Request, res: any) => {
     const token = jwt.sign(
       {
         userId: user.id,
+        isAdmin: false,
       },
       process.env.JWT_SECRET_KEY!,
       { expiresIn: age }
@@ -96,13 +103,15 @@ export const login = async (req: Request, res: any) => {
       });
     }
 
+    const { password: userPassword, ...userInfo } = user;
+
     res
       .cookie("token", token, {
         httpOnly: true,
         maxAge: age,
       })
       .status(200)
-      .json({ userId: user.id });
+      .json(userInfo);
   } catch (error) {
     return res.status(404).json({
       error: "Login Unsuccessful",

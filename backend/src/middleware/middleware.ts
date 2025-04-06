@@ -16,7 +16,7 @@ export const verifyToken = (req: any, res: any, next: NextFunction) => {
         message: "Unable to decode the token",
       });
     }
-    req.userId = decodedToken.id;
+    req.userId = decodedToken;
     next();
   } catch (error) {
     console.error(error);

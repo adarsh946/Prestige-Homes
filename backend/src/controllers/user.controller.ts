@@ -84,3 +84,35 @@ export const updateUser = async (req: any, res: any) => {
     });
   }
 };
+
+export const deleteUser = async (req: any, res: any) => {
+  const id = req.params.id;
+  const tokenId = req.userId;
+
+  if (id !== tokenId) {
+    return res.status(404).json({
+      message: "User is not found!",
+    });
+  }
+
+  try {
+    const user = await prisma.user.delete({
+      where: {
+        id,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        messege: "there is a problem in removing the user's identity",
+      });
+    }
+    return res.status(200).json({
+      message: "user is finally deleted!",
+    });
+  } catch (error) {
+    return res.status(404).json({
+      messege: "there is a problem in removing the user's identity",
+    });
+  }
+};

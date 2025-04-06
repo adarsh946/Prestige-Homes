@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  deleteUser,
   getAllUsers,
   getUser,
   updateUser,

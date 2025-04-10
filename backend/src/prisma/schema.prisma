@@ -21,13 +21,14 @@ model User {
   avatar          String
   createdAt       DateTime @default(now())
   posts           Posts[]
+  savedPost       SavedPost?
 }
 
 model Posts {
   id             String   @id @default(auto()) @map("_id") @db.ObjectId
   title          String
   price          Int
-  image          String
+  images          String[]
   address        String
   city           String
   bedroom        Int
@@ -38,7 +39,8 @@ model Posts {
   property       Property
   user           User   @relation(fields: [userId], references: [id])
   userId         String   @db.ObjectId
-
+  postDetail     PostDetail?
+  savedPost      SavedPost?
 }
 
 enum Type {
@@ -51,4 +53,27 @@ enum Property {
   condo
   land
   house
+}
+
+model PostDetail {
+  id             String  @id @default(auto()) @map("_id")  @db.ObjectId
+  desc           String
+  utilites       String?
+  income         String?
+  size           Int?
+  school         Int?
+  bus            Int?
+  restaurant     Int?
+  post           Posts @relation(fields: [postId], references: [id])
+  postId         String   @unique @db.ObjectId  
+
+
+}
+
+model SavedPost {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  user          User  @relation(fields: [userId], references: [id])
+  post          Posts   @relation(fields: [userId], references: [id]) 
+  postId        String  @unique @db.ObjectId
+  userId        String  @unique @db.ObjectId
 }

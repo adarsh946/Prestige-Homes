@@ -49,8 +49,11 @@ export const addPosts = async (req: any, res: any) => {
   try {
     const post = await prisma.posts.create({
       data: {
-        ...body,
+        ...body.postData,
         userId: tokenId,
+        postDetail: {
+          create: body.postDetail,
+        },
       },
     });
 

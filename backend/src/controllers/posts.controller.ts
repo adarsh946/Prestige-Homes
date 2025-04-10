@@ -6,6 +6,15 @@ export const getPost = async (req: any, res: any) => {
   try {
     const post = await prisma.posts.findUnique({
       where: { id },
+      include: {
+        postDetail: true,
+        user: {
+          select: {
+            fullname: true,
+            avatar: true,
+          },
+        },
+      },
     });
 
     if (!post) {
@@ -23,8 +32,20 @@ export const getPost = async (req: any, res: any) => {
 };
 
 export const getAllPosts = async (req: any, res: any) => {
+  const query = req.query;
   try {
-    const allPosts = await prisma.posts.findMany();
+    const allPosts = await prisma.posts.findMany({
+      where: {
+        city: query.city || undefined,
+        type: query.type || undefined,
+        property: query.property || undefined,
+        bedroom: parseInt(query.bedroom) || undefined,
+        price: {
+          gte: parseInt(query.minPrice) || undefined,
+          lte: parseInt(query.maxPrice) || undefined,
+        },
+      },
+    });
     if (!allPosts) {
       return res.status(404).json({
         message: "posts not found!",
